@@ -26,24 +26,54 @@ def prepare(module, options):
     return True
 
 def build(env):
-    generalIgnoreFiles = ["Makefile", "*.am", "*.in", "*.la", "*.lo", "*.o"]
-    #### copy stuff we need
     env.outbasepath = "modm/ext/lely-core"
-    env.copy("lely-core/include/", "include", ignore=env.ignore_files(*generalIgnoreFiles))
-    env.copy("lely-core/src", "src", ignore=env.ignore_files(*generalIgnoreFiles))
+    generalIgnoreFiles = ["Makefile", "*.am", "*.in", "*.la", "*.lo", "*.o", "*.rc"]
+    specificUnbuildableFiles = [
+        "*threads*",
+        "*tap*",
+    ]
+    filterFiles = []
+    filterFiles.extend(generalIgnoreFiles)
+    filterFiles.extend(specificUnbuildableFiles)
+
+    #### copy stuff we need
+    env.copy("lely-core/include/", "include", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/src/io2", "src/io2", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/src/io", "src/io", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/src/util", "src/util", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/src/ev", "src/ev", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/src/coapp", "src/coapp", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/src/co", "src/co", ignore=env.ignore_files(*filterFiles))
+    env.copy("lely-core/src/can", "src/can", ignore=env.ignore_files(*filterFiles))
+
     ###
     env.collect(":build:path.include", "modm/ext/lely-core/include")
     ### scons c++ preprocessor flags
+    cFlags = {
+        #"-std": "c99", 
+        "-std": "c11",
+    }
     cppFlags = {
-        ### windows
+        "-std": "c++20",
+    }
+
+    defines = {
+        ### os dependent things
         "_WIN32": 0,
         "_WIN64": 0,
+        "_POSIX_C_SOURCE": -1,
+        ### compiler specific
+        "__NEWLIB__": 1,
+        "LELY_NO_CXX": 0,
         ### memory specific
-        "LELY_NO_MALLOC": 1,
-        "LELY_HAVE_UCHAR_H": 1,
+        "LELY_NO_MALLOC": 0,
+        "LELY_HAVE_UCHAR_H": 0,
         "LELY_BIG_ENDIAN": 0,
+        "LELY_LITTLE_ENDIAN": 1,
         ### runtime specific
         "LELY_NO_THREADS": 1,
+        "LELY_HAVE_THREADS_H": 0,
+        "LELY_HAVE_PTHREAD_H": 0,
         "LELY_NO_ATOMICS": 0,
         "LELY_NO_STDIO": 1,
         "LELY_NO_DIAG": 1,
@@ -53,9 +83,38 @@ def build(env):
         "LELY_NO_CO_EMCY": 0,
         "LELY_NO_CO_OBJ_NAME": 0,
         "LELY_NO_CO_DCF": 0,
+        "LELY_NO_DCF_VIA_FILESYSTEM": 1, ### THIS SHOULD BE 1, THIS IS BAD
+        "LELY_NO_CO_CSDO": 0,
+        "LELY_NO_CO_LSS": 0,
+        "LELY_NO_COAPP_SLAVE": 0,
+        "LELY_NO_CO_MASTER": 0,
+        "LELY_NO_CO_RPDO": 0,
+        "LELY_NO_CO_TPDO": 0,
+        "LELY_NO_CO_MPDO": 0,
+        "LELY_NO_CO_SYNC": 0,
+        "LELY_NO_CO_NG": 0,
+        "LELY_NO_CO_NMT_BOOT": 0,
+        "LELY_NO_CO_NMT_CFG": 0,
+        "LELY_NO_CO_DCF_RESTORE": 0,
+        "LELY_NO_CO_TIME": 0,
+        "LELY_NO_CO_OBJ_DEFAULT": 0,
+        "LELY_NO_CO_OBJ_LIMITS": 0,
+        ### time
+        "LELY_HAVE_TIMESPEC": 0,
+        "LELY_HAVE_ITIMERSPEC": 0,
+        "LELY_HAVE_TIMESPEC_GET": 0,
+        "LELY_NO_TIMEOUT": 1, # should disable all uses of timespec_ ?
         ### misc
         "LELY_NO_ERRNO": 0,
         "LELY_HAVE_TIMESPEC_GET": 1,
+        ### tooling
+        "LELY_HAVE_VALGRIND": 0,
+        "LELY_HAVE_HELGRIND": 0,
+
     }
-    for k,v in cppFlags.items():
-        env.collect(":build:cppdefines", "%s=%s" % (k,v))
+    for k,v, in defines.items():
+        env.collect(":build:cppdefines", "%s=%s" % (k,v)) 
+    for k,v, in cFlags.items():
+        env.collect(":build:cflags", "%s=%s" % (k,v)) 
+    for k,v, in cppFlags.items():
+        env.collect(":build:cxxflags", "%s=%s" % (k,v)) 
