@@ -77,6 +77,7 @@ def build(env):
         #"LELY_BIG_ENDIAN": 0,
         #"LELY_LITTLE_ENDIAN": 1,
         "LELY_IO_USER_CAN_RXLEN": 32,
+        "LELY_FIBER_STKSZ": 4096,
         
         #### sys
         "HAVE_SYS_STAT_H": 1,
