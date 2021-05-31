@@ -34,3 +34,6 @@
 [submodule "ext/lvgl/lvgl"]
 	path = ext/lvgl/lvgl
 	url = https://github.com/modm-ext/lvgl-partial.git
+[submodule "ext/erpc/erpc"]
+	path = ext/erpc/erpc
+	url = https://github.com/kikass13/erpc

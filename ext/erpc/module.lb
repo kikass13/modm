@@ -1,0 +1,100 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (c) 2016-2017, 2021, Niklas Hauser
+# Copyright (c) 2017, Fabian Greif
+#
+# This file is part of the modm project.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+# -----------------------------------------------------------------------------
+def init(module):
+    module.name = "erpc"
+    module.description = "Embedded RPC implementation"
+
+def prepare(module, options):
+    device = options[":target"]
+    core = device.get_driver("core")
+    if not (core and core["type"].startswith("cortex-m")):
+        return False
+    module.depends(
+        ":architecture:assert",
+        ":cmsis:device",
+        "modm:processing:rtos",
+        ":platform:clock")
+    return True
+
+def build(env):
+    env.outbasepath = "modm/ext/erpc"
+    generalIgnoreFiles = [
+        "Makefile", "*.am", "*.in", "*.la", "*.lo", "*.o", "*.rc"
+    ]
+    specificUnbuildableFiles = [
+        "erpc_transport_arbitrator.cpp",
+        "erpc_threading_pthreads.cpp",
+        "erpc_serial.cpp",
+        "erpc_arbitrated_client_setup.cpp",
+        "erpc_setup_serial.cpp",
+        "erpc_inter_thread_buffer_transport.cpp",
+        "erpc_serial_transport.cpp",
+        "erpc_tcp_transport.cpp",
+        "erpc_transport_arbitrator.cpp",
+        "erpc_arbitrated_client_manager.cpp",
+    ]
+    filterFiles = []
+    filterFiles.extend(generalIgnoreFiles)
+    filterFiles.extend(specificUnbuildableFiles)
+
+    env.copy("erpc/erpc_c/port/erpc_config_internal.h",         "erpc_c/port/erpc_config_internal.h", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc/erpc_c/setup/erpc_client_setup.cpp",         "erpc_c/setup/erpc_client_setup.cpp", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc/erpc_c/setup/erpc_client_setup.h",           "erpc_c/setup/erpc_client_setup.h", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc/erpc_c/setup/erpc_server_setup.cpp",         "erpc_c/setup/erpc_server_setup.cpp", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc/erpc_c/setup/erpc_server_setup.h",           "erpc_c/setup/erpc_server_setup.h", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc/erpc_c/setup/erpc_setup_fifo.cpp",           "erpc_c/setup/erpc_setup_fifo.cpp", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc/erpc_c/setup/erpc_mbf_setup.h",              "erpc_c/setup/erpc_mbf_setup.h", ignore=env.ignore_files(*filterFiles))
+    
+    env.copy("erpc/erpc_c/setup/erpc_setup_mbf_dynamic.cpp",    "erpc_c/setup/erpc_setup_mbf_dynamic.cpp", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc/erpc_c/setup/erpc_setup_mbf_static.cpp",     "erpc_c/setup/erpc_setup_mbf_static.cpp", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc/erpc_c/setup/erpc_setup_mbf_static_fixed.h", "erpc_c/setup/erpc_setup_mbf_static_fixed.h", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc/erpc_c/setup/erpc_transport_setup.h",        "erpc_c/setup/erpc_transport_setup.h", ignore=env.ignore_files(*filterFiles))
+
+    env.copy("erpc/erpc_c/transports/erpc_fifo_transport.cpp",  "erpc_c/transports/erpc_fifo_transport.cpp", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc/erpc_c/transports/erpc_fifo_transport.h",    "erpc_c/transports/erpc_fifo_transport.h", ignore=env.ignore_files(*filterFiles))
+
+    env.copy("erpc/erpc_c/config",      "erpc_c/config", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc/erpc_c/infra",       "erpc_c/infra", ignore=env.ignore_files(*filterFiles))
+
+    env.copy("erpc/erpc_c/port/erpc_port.h",       "erpc_c/port/erpc_port.h", ignore=env.ignore_files(*filterFiles))
+
+    ###
+    env.collect(":build:path.include", "modm/ext/erpc/erpc_c/port")
+    env.collect(":build:path.include", "modm/ext/erpc/erpc_c/setup")
+    env.collect(":build:path.include", "modm/ext/erpc/erpc_c/transports")
+    env.collect(":build:path.include", "modm/ext/erpc/erpc_c/config")
+    env.collect(":build:path.include", "modm/ext/erpc/erpc_c/infra")
+
+    ### scons c++ preprocessor flags
+    cFlags = {
+        #"-std": "c99", 
+        "-std": "c11",
+    }
+    cppFlags = {
+        "-std": "c++20",
+    }
+
+    defines = {
+        "ERPC_THREADS": "0"
+    }
+
+    for k,v, in defines.items():
+        env.collect(":build:cppdefines", "%s=%s" % (k,v)) 
+    for k,v, in cFlags.items():
+        env.collect(":build:cflags", "%s=%s" % (k,v)) 
+    for k,v, in cppFlags.items():
+        env.collect(":build:cxxflags", "%s=%s" % (k,v)) 
+
+
+   # env.collect(":build:cxxflags", "--warn-no-missing-field-initializers")
+   # env.collect(":build:cxxflags", "--warn-no-write-strings")
