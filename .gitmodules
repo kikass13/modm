@@ -31,3 +31,6 @@
 [submodule "ext/chan/fatfs"]
 	path = ext/chan/fatfs
 	url = https://github.com/modm-ext/fatfs-partial.git
+[submodule "ext/lely/lely-core"]
+	path = ext/lely/lely-core
+	url = https://gitlab.com/kikass13/lely-core
