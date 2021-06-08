@@ -31,7 +31,7 @@ public:
 
 namespace erpc {
  
-class ModmDeviceTransport : public FramedTransport
+class ModmDeviceTransport : public FramedTransport , public modm::NestedResumable<2>
 {
 public:
     /*!
@@ -85,6 +85,12 @@ protected:
      * @retval #kErpcStatus_ConnectionClosed Peer closed the connection.
      */
     virtual erpc_status_t underlyingSend(const uint8_t *data, uint32_t size);
+
+private:
+    modm::ResumableResult<erpc_status_t>
+        send__(const uint8_t* data, uint32_t size);
+    modm::ResumableResult<erpc_status_t>
+        receive__(uint8_t* data, uint32_t size);
 };
 
 } // namespace erpc

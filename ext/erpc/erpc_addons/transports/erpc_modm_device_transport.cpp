@@ -10,7 +10,6 @@
  */
 #include "erpc_modm_device_transport.h"
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // Code
 ////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +43,8 @@ erpc_status_t ModmDeviceTransport::underlyingReceive(uint8_t *data, uint32_t siz
 {
     erpc_status_t status = kErpcStatus_ReceiveFailed;
     if(device_){
-        status = device_->read(data, size).getResult();
+        status = receive__(data, size).getResult();
+        // status = receive__(data, size);
     }
     return status;
 }
@@ -53,9 +53,30 @@ erpc_status_t ModmDeviceTransport::underlyingSend(const uint8_t *data, uint32_t 
 {
     erpc_status_t status = kErpcStatus_ReceiveFailed;
     if(device_){
-        status = device_->write(data, size).getResult();
+        status = send__(data, size).getResult();
+        // status = send__(data,size);
     }
-    return status;
+   return status;
+}
+
+modm::ResumableResult<erpc_status_t> 
+ModmDeviceTransport::send__(const uint8_t* data, uint32_t size){
+    erpc_status_t status;
+    RF_BEGIN();
+    status = RF_CALL_BLOCKING(device_->write(data, size));
+    RF_END_RETURN(status);
+    // auto status = write(data, size);
+    // return status;
+}
+modm::ResumableResult<erpc_status_t> 
+ModmDeviceTransport::receive__(uint8_t* data, uint32_t size){
+    erpc_status_t status;
+    RF_BEGIN();
+    status = RF_CALL_BLOCKING(device_->read(data, size));
+    RF_END_RETURN(status);
+    // auto status = read(data, size)
+    // return status;
+    
 }
 
 } // namespace erpc

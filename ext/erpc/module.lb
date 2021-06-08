@@ -22,14 +22,14 @@ def prepare(module, options):
     module.depends(
         ":architecture:assert",
         ":cmsis:device",
-        "modm:processing:rtos",
+        #"modm:processing:rtos",
         ":platform:clock")
     return True
 
 def build(env):
     env.outbasepath = "modm/ext/erpc"
     generalIgnoreFiles = [
-        "Makefile", "*.am", "*.in", "*.la", "*.lo", "*.o", "*.rc"
+        "Makefile", "*.am", "*.in", "*.la", "*.lo", "*.o", "*.rc", "*.dox",
     ]
     specificUnbuildableFiles = [
         "erpc_transport_arbitrator.cpp",

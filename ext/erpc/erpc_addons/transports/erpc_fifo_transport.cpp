@@ -40,7 +40,6 @@ bool FifoTransport::hasMessage(void){
 }
 
 
-#define TIMEOUT_DURATION 100ms
 erpc_status_t FifoTransport::underlyingReceive(uint8_t *data, uint32_t size)
 {
     erpc_status_t status = kErpcStatus_ReceiveFailed;
@@ -62,7 +61,7 @@ erpc_status_t FifoTransport::underlyingReceive(uint8_t *data, uint32_t size)
         auto t = std::chrono::high_resolution_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(t - now);
         // std::cout << "elapsed ... " << elapsed.count() << std::endl;
-        if(elapsed >= TIMEOUT_DURATION){
+        if(elapsed >= 100ms){
             timeout = true;
             break;
         }
