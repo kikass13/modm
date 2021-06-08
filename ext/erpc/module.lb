@@ -52,21 +52,29 @@ def build(env):
     env.copy("erpc/erpc_c/setup/erpc_client_setup.h",           "erpc_c/setup/erpc_client_setup.h", ignore=env.ignore_files(*filterFiles))
     env.copy("erpc/erpc_c/setup/erpc_server_setup.cpp",         "erpc_c/setup/erpc_server_setup.cpp", ignore=env.ignore_files(*filterFiles))
     env.copy("erpc/erpc_c/setup/erpc_server_setup.h",           "erpc_c/setup/erpc_server_setup.h", ignore=env.ignore_files(*filterFiles))
-    env.copy("erpc/erpc_c/setup/erpc_setup_fifo.cpp",           "erpc_c/setup/erpc_setup_fifo.cpp", ignore=env.ignore_files(*filterFiles))
     env.copy("erpc/erpc_c/setup/erpc_mbf_setup.h",              "erpc_c/setup/erpc_mbf_setup.h", ignore=env.ignore_files(*filterFiles))
-    
     env.copy("erpc/erpc_c/setup/erpc_setup_mbf_dynamic.cpp",    "erpc_c/setup/erpc_setup_mbf_dynamic.cpp", ignore=env.ignore_files(*filterFiles))
     env.copy("erpc/erpc_c/setup/erpc_setup_mbf_static.cpp",     "erpc_c/setup/erpc_setup_mbf_static.cpp", ignore=env.ignore_files(*filterFiles))
-    env.copy("erpc/erpc_c/setup/erpc_setup_mbf_static_fixed.h", "erpc_c/setup/erpc_setup_mbf_static_fixed.h", ignore=env.ignore_files(*filterFiles))
     env.copy("erpc/erpc_c/setup/erpc_transport_setup.h",        "erpc_c/setup/erpc_transport_setup.h", ignore=env.ignore_files(*filterFiles))
-
-    env.copy("erpc/erpc_c/transports/erpc_fifo_transport.cpp",  "erpc_c/transports/erpc_fifo_transport.cpp", ignore=env.ignore_files(*filterFiles))
-    env.copy("erpc/erpc_c/transports/erpc_fifo_transport.h",    "erpc_c/transports/erpc_fifo_transport.h", ignore=env.ignore_files(*filterFiles))
 
     env.copy("erpc/erpc_c/config",      "erpc_c/config", ignore=env.ignore_files(*filterFiles))
     env.copy("erpc/erpc_c/infra",       "erpc_c/infra", ignore=env.ignore_files(*filterFiles))
-
     env.copy("erpc/erpc_c/port/erpc_port.h",       "erpc_c/port/erpc_port.h", ignore=env.ignore_files(*filterFiles))
+    
+    ### add extra ercp addon code
+    env.copy("erpc_addons/setup/erpc_transport_setup_addons.h",  "erpc_c/setup/erpc_transport_setup_addons.h", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc_addons/setup/erpc_mbf_setup_addons.h",  "erpc_c/setup/erpc_mbf_setup_addons.h", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc_addons/setup/erpc_setup_mbf_static_fixed.h",  "erpc_c/setup/erpc_setup_mbf_static_fixed.h", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc_addons/setup/erpc_setup_modm_device.cpp",  "erpc_c/setup/erpc_setup_modm_device.cpp", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc_addons/setup/erpc_setup_fifo.cpp",  "erpc_c/setup/erpc_setup_fifo.cpp", ignore=env.ignore_files(*filterFiles))
+
+    env.copy("erpc_addons/transports/erpc_modm_device_transport.cpp",  "erpc_c/transports/erpc_modm_device_transport.cpp", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc_addons/transports/erpc_modm_device_transport.h",  "erpc_c/transports/erpc_modm_device_transport.h", ignore=env.ignore_files(*filterFiles))
+
+    env.copy("erpc_addons/transports/erpc_fifo_transport.cpp",  "erpc_c/transports/erpc_fifo_transport.cpp", ignore=env.ignore_files(*filterFiles))
+    env.copy("erpc_addons/transports/erpc_fifo_transport.h",    "erpc_c/transports/erpc_fifo_transport.h", ignore=env.ignore_files(*filterFiles))
+
+
 
     ###
     env.collect(":build:path.include", "modm/ext/erpc/erpc_c/port")
