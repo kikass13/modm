@@ -36,4 +36,4 @@
 	url = https://github.com/modm-ext/lvgl-partial.git
 [submodule "ext/erpc/erpc"]
 	path = ext/erpc/erpc
-	url = https://github.com/kikass13/erpc
+	url = https://github.com/EmbeddedRPC/erpc
