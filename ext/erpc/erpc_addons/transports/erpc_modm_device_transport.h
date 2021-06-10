@@ -17,6 +17,8 @@
 #include <modm/processing/resumable.hpp>
 
 
+namespace erpc {
+
 class Device
 {
 public:
@@ -24,14 +26,13 @@ public:
 
     virtual erpc_status_t connect() = 0;
 
-	virtual modm::ResumableResult<erpc_status_t> write(const uint8_t* data, uint32_t size) = 0;
+	virtual erpc_status_t write(const uint8_t* data, uint32_t size) = 0;
 
-	virtual modm::ResumableResult<erpc_status_t> read(uint8_t* data, uint32_t size) = 0;
+	virtual erpc_status_t read(uint8_t* data, uint32_t size) = 0;
 };
 
-namespace erpc {
- 
-class ModmDeviceTransport : public FramedTransport , public modm::NestedResumable<2>
+
+class ModmDeviceTransport : public FramedTransport
 {
 public:
     /*!
@@ -87,10 +88,8 @@ protected:
     virtual erpc_status_t underlyingSend(const uint8_t *data, uint32_t size);
 
 private:
-    modm::ResumableResult<erpc_status_t>
-        send__(const uint8_t* data, uint32_t size);
-    modm::ResumableResult<erpc_status_t>
-        receive__(uint8_t* data, uint32_t size);
+    erpc_status_t send__(const uint8_t* data, uint32_t size);
+    erpc_status_t receive__(uint8_t* data, uint32_t size);
 };
 
 } // namespace erpc

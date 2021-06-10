@@ -33,7 +33,7 @@ typedef void (*rpmsg_ready_cb)(void);
 // API
 ////////////////////////////////////////////////////////////////////////////////
 erpc_transport_t erpc_transport_fifo_init(erpc::Buffer* receiveBuffer, erpc::Buffer* sendBuffer);
-erpc_transport_t erpc_transport_modm_device_init(Device* device);
+erpc_transport_t erpc_transport_modm_device_init(erpc::Device* device);
 
 /*! @} */
 

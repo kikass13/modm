@@ -54,7 +54,7 @@ def build(env):
     env.copy("erpc/erpc_c/setup/erpc_server_setup.h",           "erpc_c/setup/erpc_server_setup.h", ignore=env.ignore_files(*filterFiles))
     env.copy("erpc/erpc_c/setup/erpc_mbf_setup.h",              "erpc_c/setup/erpc_mbf_setup.h", ignore=env.ignore_files(*filterFiles))
     env.copy("erpc/erpc_c/setup/erpc_setup_mbf_dynamic.cpp",    "erpc_c/setup/erpc_setup_mbf_dynamic.cpp", ignore=env.ignore_files(*filterFiles))
-    env.copy("erpc/erpc_c/setup/erpc_setup_mbf_static.cpp",     "erpc_c/setup/erpc_setup_mbf_static.cpp", ignore=env.ignore_files(*filterFiles))
+    # env.copy("erpc/erpc_c/setup/erpc_setup_mbf_static.cpp",     "erpc_c/setup/erpc_setup_mbf_static.cpp", ignore=env.ignore_files(*filterFiles))
     env.copy("erpc/erpc_c/setup/erpc_transport_setup.h",        "erpc_c/setup/erpc_transport_setup.h", ignore=env.ignore_files(*filterFiles))
 
     env.copy("erpc/erpc_c/config",      "erpc_c/config", ignore=env.ignore_files(*filterFiles))

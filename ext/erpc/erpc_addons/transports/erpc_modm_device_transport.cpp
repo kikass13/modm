@@ -17,9 +17,7 @@ namespace erpc{
 
 ModmDeviceTransport::ModmDeviceTransport(Device* device)
 : device_(device)
-{
-    (void) device;
-}
+{}
 
 ModmDeviceTransport::~ModmDeviceTransport(void) {}
 
@@ -39,44 +37,32 @@ bool ModmDeviceTransport::hasMessage(void){
     return hasReceived;
 }
 
-erpc_status_t ModmDeviceTransport::underlyingReceive(uint8_t *data, uint32_t size)
-{
+erpc_status_t ModmDeviceTransport::underlyingReceive(uint8_t *data, uint32_t size){
     erpc_status_t status = kErpcStatus_ReceiveFailed;
     if(device_){
-        status = receive__(data, size).getResult();
-        // status = receive__(data, size);
+        status = receive__(data, size);
     }
     return status;
 }
 
-erpc_status_t ModmDeviceTransport::underlyingSend(const uint8_t *data, uint32_t size)
-{
-    erpc_status_t status = kErpcStatus_ReceiveFailed;
+erpc_status_t ModmDeviceTransport::underlyingSend(const uint8_t *data, uint32_t size){
+    erpc_status_t status = kErpcStatus_SendFailed;
     if(device_){
-        status = send__(data, size).getResult();
-        // status = send__(data,size);
+        status = send__(data, size);
     }
    return status;
 }
 
-modm::ResumableResult<erpc_status_t> 
-ModmDeviceTransport::send__(const uint8_t* data, uint32_t size){
+erpc_status_t ModmDeviceTransport::receive__(uint8_t* data, uint32_t size){
     erpc_status_t status;
-    RF_BEGIN();
-    status = RF_CALL_BLOCKING(device_->write(data, size));
-    RF_END_RETURN(status);
-    // auto status = write(data, size);
-    // return status;
+    status = device_->read(data, size);
+    return status;
 }
-modm::ResumableResult<erpc_status_t> 
-ModmDeviceTransport::receive__(uint8_t* data, uint32_t size){
+
+erpc_status_t ModmDeviceTransport::send__(const uint8_t* data, uint32_t size){
     erpc_status_t status;
-    RF_BEGIN();
-    status = RF_CALL_BLOCKING(device_->read(data, size));
-    RF_END_RETURN(status);
-    // auto status = read(data, size)
-    // return status;
-    
+    status = device_->write(data, size);
+    return status;
 }
 
 } // namespace erpc
